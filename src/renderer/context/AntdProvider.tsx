@@ -1,4 +1,5 @@
 import { usePreference } from '@data/hooks/usePreference'
+import { normalizeThemeColor } from '@renderer/hooks/useUserTheme'
 import { defaultLanguage } from '@shared/config/constant'
 import type { LanguageVarious } from '@shared/data/preference/preferenceTypes'
 import { ConfigProvider, theme } from 'antd'
@@ -109,7 +110,7 @@ const AntdProvider: FC<PropsWithChildren> = ({ children }) => {
           }
         },
         token: {
-          colorPrimary: colorPrimary,
+          colorPrimary: normalizeThemeColor(colorPrimary),
           fontFamily: 'var(--font-family)',
           colorBgMask: _theme === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.8)',
           motionDurationMid: '100ms'

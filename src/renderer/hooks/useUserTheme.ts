@@ -2,7 +2,16 @@
 // import { setUserTheme, UserTheme } from '@renderer/store/settings'
 
 import { usePreference } from '@data/hooks/usePreference'
+import { DEFAULT_COLOR_PRIMARY } from '@renderer/config/constant'
 import Color from 'color'
+
+export const normalizeThemeColor = (value?: string) => {
+  try {
+    return Color(value?.trim() || DEFAULT_COLOR_PRIMARY).hex()
+  } catch {
+    return DEFAULT_COLOR_PRIMARY
+  }
+}
 
 export default function useUserTheme() {
   const [colorPrimary, setColorPrimary] = usePreference('ui.theme_user.color_primary')
@@ -19,7 +28,7 @@ export default function useUserTheme() {
   }
 
   const initUserTheme = (theme: { colorPrimary: string } = { colorPrimary }) => {
-    const colorPrimary = Color(theme.colorPrimary)
+    const colorPrimary = Color(normalizeThemeColor(theme.colorPrimary))
 
     document.documentElement.style.setProperty('--cs-theme-primary', colorPrimary.toString())
     setOptionalCssVar('--cs-user-font-family', userFontFamily)
@@ -27,14 +36,14 @@ export default function useUserTheme() {
   }
 
   return {
-    colorPrimary: Color(colorPrimary),
+    colorPrimary: Color(normalizeThemeColor(colorPrimary)),
 
     initUserTheme,
 
-    userTheme: { colorPrimary, userFontFamily, userCodeFontFamily },
+    userTheme: { colorPrimary: normalizeThemeColor(colorPrimary), userFontFamily, userCodeFontFamily },
 
     setUserTheme(userTheme: { colorPrimary: string; userFontFamily: string; userCodeFontFamily: string }) {
-      void setColorPrimary(userTheme.colorPrimary)
+      void setColorPrimary(normalizeThemeColor(userTheme.colorPrimary))
       void setUserFontFamily(userTheme.userFontFamily)
       void setUserCodeFontFamily(userTheme.userCodeFontFamily)
       initUserTheme(userTheme)
